@@ -24,4 +24,6 @@ for %%a in ("amifldrv64.sys", "amigendrv64.sys", "nvram.txt") do (
 )
 
 SCEWIN_64.exe /I /S nvram.txt 2> log-file.txt
+type log-file.txt
+echo See log-file.txt for output messages
 pause
