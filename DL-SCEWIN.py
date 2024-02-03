@@ -31,7 +31,7 @@ def download_innoextract(output_path: str) -> None:
                 file.extract("innoextract.exe", output_path)
 
 
-def main() -> int:  # noqa: D103
+def main() -> int:
     if find_executable("innoextract") is None:
         download_innoextract("C:\\Windows")
 
