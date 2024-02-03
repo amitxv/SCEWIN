@@ -12,7 +12,6 @@ from distutils.spawn import find_executable
 
 
 def download_innoextract(output_path: str) -> None:
-    """Download innoextract and place in PATH."""
     response = requests.get(
         "https://api.github.com/repos/dscharrer/innoextract/releases/latest",
         timeout=5,
