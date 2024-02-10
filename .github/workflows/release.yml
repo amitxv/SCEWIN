@@ -50,3 +50,4 @@ jobs:
           artifacts: SCEWIN.zip
           name: ${{ env.local_version }}
           tag: ${{ env.local_version }}
+          generateReleaseNotes: true
