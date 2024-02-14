@@ -24,16 +24,19 @@ jobs:
       - name: Run script
         run: python DL-SCEWIN.py
 
-      - name: Check for update
+      - name: Get local version
+        id: get-local-version
         run: |
           $local_version = Get-ChildItem -Path .\SCEWIN\ -Directory | Select-Object -First 1 -ExpandProperty Name
 
-          Add-Content -Path $env:GITHUB_ENV -Value "local_version=$local_version"
+          Add-Content -Path $env:GITHUB_OUTPUT -Value "local_version=$local_version"
 
+      - name: Check for update
+        run: |
           try {
               $remote_version = Invoke-RestMethod "https://api.github.com/repos/amitxv/SCEWIN/releases/latest"
 
-              if ($remote_version.name -eq $local_version) {
+              if ($remote_version.name -eq ${{ steps.get-local-version.outputs.local_version }}) {
                   Write-Host "info: latest version already posted"
                   exit 1
               }
@@ -48,6 +51,6 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           artifacts: SCEWIN.zip
-          name: ${{ env.local_version }}
-          tag: ${{ env.local_version }}
+          name: ${{ steps.get-local-version.outputs.local_version }}
+          tag: ${{ steps.get-local-version.outputs.local_version }}
           generateReleaseNotes: true
