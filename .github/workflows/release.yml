@@ -1,4 +1,5 @@
 name: Update
+run-name: Update
 
 on:
   schedule:
