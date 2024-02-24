@@ -37,7 +37,7 @@ jobs:
       - name: Check for update
         run: |
           try {
-              $remote_version = Invoke-RestMethod "https://api.github.com/repos/amitxv/SCEWIN/releases/latest"
+              $remote_version = Invoke-RestMethod https://api.github.com/repos/amitxv/SCEWIN/releases/latest
 
               if ($remote_version.name -eq ${{ steps.get-local-version.outputs.local_version }}) {
                   Write-Host "info: latest version already posted"
