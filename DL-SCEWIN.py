@@ -1,5 +1,6 @@
 import contextlib
 import glob
+import logging
 import os
 import re
 import shutil
@@ -9,6 +10,8 @@ import zipfile
 
 import requests
 from distutils.spawn import find_executable
+
+logger = logging.getLogger("CLI")
 
 
 def download_innoextract(output_path: str) -> None:
@@ -32,11 +35,13 @@ def download_innoextract(output_path: str) -> None:
 
 
 def main() -> int:
+    logging.basicConfig(format="[%(name)s] %(levelname)s: %(message)s", level=logging.INFO)
+
     if find_executable("innoextract") is None:
         download_innoextract("C:\\Windows")
 
-    msi_center_zip = f"{os.environ['TEMP']}\\MSI-Center.zip"
-    extract_path = f"{os.environ['TEMP']}\\MSI-Center"
+    msi_center_zip = os.path.join(os.environ["TEMP"], "MSI-Center.zip")
+    extract_path = os.path.join(os.environ["TEMP"], "MSI-Center")
 
     response = requests.get(
         "https://download.msi.com/uti_exe/gaming-gear/MSI-Center.zip",
@@ -55,7 +60,7 @@ def main() -> int:
     msi_center_installer = glob.glob(f"{extract_path}\\MSI Center_*.exe")
 
     if not msi_center_installer:
-        print("error: MSI Center executable installer not found")
+        logger.error("MSI Center executable installer not found")
         return 1
 
     # get version from file name
@@ -65,7 +70,7 @@ def main() -> int:
     )
 
     if not msi_center_ver:
-        print("error: Failed to obtain MSI Center version")
+        logger.error("Failed to obtain MSI Center version")
         return 1
 
     msi_center_version = msi_center_ver.group(1)
@@ -77,7 +82,7 @@ def main() -> int:
     appxbundle = glob.glob(f"{extract_path}\\app\\*.appxbundle")
 
     if not appxbundle:
-        print("error: Appx bundle file not found")
+        logger.error("Appx bundle file not found")
         return 1
 
     appx_file_name = f"MSI%20Center_{msi_center_version}_x64.appx"
@@ -104,7 +109,7 @@ def main() -> int:
     engine_lib_installer = glob.glob(f"{prepackage_path}\\Engine Lib_*.exe")
 
     if not engine_lib_installer:
-        print("error: Engine Lib installer not found")
+        logger.error("Engine Lib installer not found")
         return 1
 
     subprocess.call(
@@ -116,7 +121,7 @@ def main() -> int:
     scewin_version_folder = glob.glob(f"{scewin_path}\\*\\")
 
     if not scewin_version_folder:
-        print("error: SCEWIN version folder not found")
+        logger.error("SCEWIN version folder not found")
         return 1
 
     # remove residual files
